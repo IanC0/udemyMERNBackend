@@ -41,5 +41,5 @@ const getPlaceByUserId = (req, res, next) => {
 };
 
 //both bundled to one object
-exports.getPlaceById = getPlaceById();
-exports.getPlaceByUserId = getPlaceByUserId();
+exports.getPlaceById = getPlaceById;
+exports.getPlaceByUserId = getPlaceByUserId;
