@@ -1,18 +1,30 @@
-const uuid = require('uuid').v4;
+const uuid = require("uuid").v4;
 
-const HttpError = require("../models/http-error")
+const HttpError = require("../models/http-error");
+const { patch } = require("../routes/places-routes");
 
 const DUMMY_PLACES = [
   {
     id: "p1",
     title: "Empire State Building",
-    Description: "One of the most famous sky scrapers in the world!",
+    description: "One of the most famous sky scrapers in the world!",
     location: {
       lat: 40.7484474,
       lng: -739871516,
     },
     address: "20 W 34th St, new York, NY 10001",
     creator: "u1",
+  },
+  {
+    id: "p2",
+    title: "PEmpire State Building",
+    Description: "POne of the most famous sky scrapers in the world!",
+    location: {
+      lat: 50.7484474,
+      lng: -839871516,
+    },
+    address: "P20 W 34th St, new York, NY 10001",
+    creator: "u2",
   },
 ];
 
@@ -43,23 +55,46 @@ const getPlaceByUserId = (req, res, next) => {
 };
 
 const createPlace = (req, res, next) => {
-  const { title, description, coordinates, address, creator } = req.body;  
-  
+  const { title, description, coordinates, address, creator } = req.body;
+
   const createdPlace = {
     id: uuid(), //1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
     title,
     description,
     location: coordinates,
     address,
-    creator
-  }
+    creator,
+  };
 
   DUMMY_PLACES.push(createdPlace);
-  res.status(201).json({'places': createdPlace})
-}
+  res.status(201).json({ places: createdPlace });
+};
 
+const updatePlace = (req, res, next) => {
+  const { title, description } = req.body;
+  const placeId = req.params.pid;
+
+  const updatedPlace = { ...DUMMY_PLACES.find(p => p.id === placeId) };
+  const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
+  updatedPlace.title = title;
+  updatedPlace.description = description;
+
+  DUMMY_PLACES[placeIndex] = updatedPlace;
+
+  res.status(200).json({place: updatedPlace});  
+};
+
+const deletePlace = (req, res, next) => {
+  const placeIndex = DUMMY_PLACES.findIndex(
+    (element) => element["id"] == req.params.pid
+  );
+  DUMMY_PLACES.splice(placeIndex, 1);
+  res.status(200).send(DUMMY_PLACES);
+};
 
 //both bundled to one object
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
 exports.createPlace = createPlace;
+exports.updatePlace = updatePlace;
+exports.deletePlace = deletePlace;
