@@ -1,7 +1,6 @@
 const uuid = require("uuid").v4;
 
 const HttpError = require("../models/http-error");
-const { patch } = require("../routes/places-routes");
 
 let DUMMY_PLACES = [
   {
