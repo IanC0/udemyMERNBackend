@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const getCoordsForAddress = require("../Util/location");
+const Place = require('../models/place');
 
 let DUMMY_PLACES = [
   {
@@ -18,17 +19,26 @@ let DUMMY_PLACES = [
   },
 ];
 
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid; // { pid: 'p1' }
 
-  const place = DUMMY_PLACES.find((p) => {
-    return p.id === placeId;
-  });
-  if (!place) {
-    throw new HttpError("Could not find a place for the provided id.", 404);
+  let place;
+  try {
+  place = await Place.findById(placeId);
+  } catch(err) {
+    const error = new HttpError(
+      'Something went wrong, could not find a place.',
+      500
+    );
+    return next(error);
   }
 
-  res.json({ place }); // {place: place}
+  if (!place) {
+    const error = new HttpError("Could not find a place for the provided id.", 404);
+    return next(error);
+  }
+
+  res.json({ place: place.toObject( {getters: true}) }); // {place: place}
 };
 
 //comment
@@ -67,16 +77,27 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createdPlace = {
-    id: uuid(), //1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
+  const createdPlace = new Place({
     title,
     description,
-    location: coordinates,
     address,
-    creator,
+    location: coordinates,
+    image: 'https://www.google.co.uk/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+    creator
+  });
+  
+  try {  
+    await createdPlace.save();
+  } catch(err) {
+    const error = new HttpError(
+      'Creating place failed, please try again.',
+      500
+    )
+    return next(error);
   };
 
-  DUMMY_PLACES.push(createdPlace);
+
+
   res.status(201).json({ places: createdPlace });
 };
 
