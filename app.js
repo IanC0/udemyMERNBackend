@@ -3,15 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose')
 
 const placesRoutes = require('./routes/places-routes');
+const userRoutes = require('.routes/user-routes')
 const HttpError = require('./models/http-error')
-
-const userRoutes = require('./routes/user-routes')
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/api/places', placesRoutes);
+app.use('/api/places', placesRoutes); // => /api/places...
 app.use('/api/users', userRoutes);
 
 app.use((req, res, next) => {
