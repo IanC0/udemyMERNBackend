@@ -10,6 +10,18 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  // could restrict this to localHost3000 but we are fine opening up to all for this app
+  res.setHeader('Access-Control-Allow-Origin', '*',);
+  // specify which headers these requests sent by the browser may have,
+  // this controls which headers incoming requests may have so that they are handled.
+  // could be star as well but wanted to be more specific
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-requested-With, Content-Type, Accept, Authorization');
+  // which HTTP methods may be attached on incoming requests
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+  next();
+})
+
 app.use('/api/places', placesRoutes); // => /api/places...
 app.use('/api/users', userRoutes);
 
