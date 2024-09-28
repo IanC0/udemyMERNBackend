@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose')
 
 const placesRoutes = require('./routes/places-routes');
-const userRoutes = require('.routes/user-routes')
+const userRoutes = require('./routes/user-routes')
 const HttpError = require('./models/http-error')
 
 const app = express();
@@ -27,7 +27,7 @@ app.use((error, req, res, next) => {
 })
 
 mongoose
-  .connect('mongodb+srv://DB-user3:password1234@cluster0.himpb.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0')
+  .connect('mongodb+srv://DB-user3:password1234@cluster0.himpb.mongodb.net/udemyMern?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => {
     app.listen(5000);
   })
