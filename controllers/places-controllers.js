@@ -186,7 +186,7 @@ const deletePlace = async (req, res, next) => {
     await place.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
-    console.log("error",err);
+    console.log(err);
     const error = new HttpError(
       "Something went wrong, could not delete place2",
       500
